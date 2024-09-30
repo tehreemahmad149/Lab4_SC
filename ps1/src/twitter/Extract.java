@@ -3,8 +3,12 @@
  */
 package twitter;
 
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Extract consists of methods that extract information from a list of tweets.
@@ -24,7 +28,25 @@ public class Extract {
      *         every tweet in the list.
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        assert tweets != null;
+        
+        List<Tweet> sortedTweets = sortByTimestamp(tweets);
+        
+        
+        Instant start = sortedTweets.get(0).getTimestamp();//the start of the time
+        Instant end = sortedTweets.get(sortedTweets.size() -1).getTimestamp();//thius will be the laterst time
+        
+        return new Timespan(start, end);
+    }
+    
+    private static List<Tweet> sortByTimestamp(List<Tweet> tweets) {
+        assert tweets != null;
+        
+        
+        
+        return tweets.stream()
+                .sorted(Comparator.comparing(Tweet::getTimestamp))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -41,9 +63,29 @@ public class Extract {
      *         contain a mention of the username mit.
      *         Twitter usernames are case-insensitive, and the returned set may
      *         include a username at most once.
-     */
+     */    
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+        Set<String> mentionedUsers = new HashSet<>();
+        
+        for (Tweet tweet : tweets) {
+        	
+            String[] tokens = tweet.getText().split("\\s+");  // tweet is being split with the use of the whitespace so that each word is spearated
+            
+            
+            
+            for (String token : tokens) {
+                if (token.startsWith("@") && token.length() > 1) {
+                	
+                    String username = token.substring(1);  
+                    mentionedUsers.add(username);//the mentioned user is added to the set
+                }
+            }
+        }
+        
+        
+        
+        
+        return mentionedUsers;
     }
 
 }

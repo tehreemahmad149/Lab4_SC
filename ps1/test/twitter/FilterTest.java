@@ -24,12 +24,14 @@ public class FilterTest {
     
     private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
     private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
+    //no new tweets have been added
     
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
         assert false; // make sure assertions are enabled with VM argument: -ea
     }
     
+    //already provided
     @Test
     public void testWrittenByMultipleTweetsSingleResult() {
         List<Tweet> writtenBy = Filter.writtenBy(Arrays.asList(tweet1, tweet2), "alyssa");
@@ -38,6 +40,7 @@ public class FilterTest {
         assertTrue("expected list to contain tweet", writtenBy.contains(tweet1));
     }
     
+    //already provided
     @Test
     public void testInTimespanMultipleTweetsMultipleResults() {
         Instant testStart = Instant.parse("2016-02-17T09:00:00Z");
@@ -50,6 +53,7 @@ public class FilterTest {
         assertEquals("expected same order", 0, inTimespan.indexOf(tweet1));
     }
     
+  //already provided
     @Test
     public void testContaining() {
         List<Tweet> containing = Filter.containing(Arrays.asList(tweet1, tweet2), Arrays.asList("talk"));
@@ -57,6 +61,37 @@ public class FilterTest {
         assertFalse("expected non-empty list", containing.isEmpty());
         assertTrue("expected list to contain tweets", containing.containsAll(Arrays.asList(tweet1, tweet2)));
         assertEquals("expected same order", 0, containing.indexOf(tweet1));
+    }
+    // no author has matched
+    @Test
+    public void testWrittenByNoMatch() {
+        List<Tweet> result = Filter.writtenBy(Arrays.asList(tweet1, tweet2), "someoneelse");
+        assertEquals("expected no tweets", 0, result.size()); }
+
+    @Test
+    //in timespan 
+    public void testInTimespan() {
+        Instant start = Instant.parse("2016-02-17T09:00:00Z");//less that d1
+        Instant end = Instant.parse("2016-02-17T12:00:00Z");//more than d2
+        Timespan timespan = new Timespan(start, end);
+
+        List<Tweet> result = Filter.inTimespan(Arrays.asList(tweet1, tweet2), timespan);
+
+        assertEquals("expected two tweets in the timespan", 2, result.size());
+        assertTrue("expected result to contain tweet1", result.contains(tweet1));
+        assertTrue("expected result to contain tweet2", result.contains(tweet2));
+    }
+    @Test
+    
+    //not in time span
+    public void testInTimespanNoMatch() {
+        Instant start = Instant.parse("2016-02-17T12:00:00Z");
+        Instant end = Instant.parse("2016-02-17T13:00:00Z");
+        Timespan timespan = new Timespan(start, end);
+/// the tweets 1,2 are both from T10,T11 hence they both will not lie in range
+        List<Tweet> result = Filter.inTimespan(Arrays.asList(tweet1, tweet2), timespan);
+
+        assertEquals("expected no tweets in the timespan", 0, result.size());
     }
 
     /*

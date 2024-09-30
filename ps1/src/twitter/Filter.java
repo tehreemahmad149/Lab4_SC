@@ -3,7 +3,9 @@
  */
 package twitter;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Filter consists of methods that filter a list of tweets for those matching a
@@ -26,8 +28,18 @@ public class Filter {
      * @return all and only the tweets in the list whose author is username,
      *         in the same order as in the input list.
      */
-    public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+	public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
+        List<Tweet> result = new ArrayList<>();
+
+        for (Tweet tweet : tweets) {
+            if (tweet.getAuthor().equalsIgnoreCase(username)) {
+            	
+            	
+                result.add(tweet);  //will add tweet if author has matched
+            }
+        }
+
+        return result; 
     }
 
     /**
@@ -40,8 +52,20 @@ public class Filter {
      * @return all and only the tweets in the list that were sent during the timespan,
      *         in the same order as in the input list.
      */
-    public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+	public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
+        List<Tweet> result = new ArrayList<>();
+
+        for (Tweet tweet : tweets) {
+        	
+            Instant timestamp = tweet.getTimestamp();
+            if (!timestamp.isBefore(timespan.getStart()) && !timestamp.isAfter(timespan.getEnd())) {
+            	
+            	
+                result.add(tweet); //add tweet if in span condition is true
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -59,8 +83,24 @@ public class Filter {
      *         so "Obama" is the same as "obama".  The returned tweets are in the
      *         same order as in the input list.
      */
-    public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+	public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
+        List<Tweet> result = new ArrayList<>();
+
+        for (Tweet tweet : tweets) {
+            String text = tweet.getText().toLowerCase();
+
+            for (String word : words) {
+            	
+            	
+                if (text.contains(word.toLowerCase())) {//this is to remove ambiquity
+                    result.add(tweet); 
+                    break;  //as already added no need to keep on checking
+                    //move to next tweet
+                }
+            }
+        }
+
+        return result;
     }
 
 }
