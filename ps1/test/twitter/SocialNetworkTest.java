@@ -42,6 +42,7 @@ public class SocialNetworkTest {
         List<Tweet> tweets = new ArrayList<>();
         /*dummy list has been made for test which has no mentions*/
         tweets.add(new Tweet(1, "alice", "Hello!", Instant.now())); 
+        System.out.println("Follows graph: " + followsGraph);
         assertTrue("expected empty graph", followsGraph.isEmpty());
     }
     @Test

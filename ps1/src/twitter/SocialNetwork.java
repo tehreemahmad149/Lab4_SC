@@ -50,9 +50,9 @@ public class SocialNetwork {
             String author = tweet.getAuthor().toLowerCase(); //get everything in a single case
             Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet)); // extract mentioned users using Extract.java
             
-            // ensure the author is a key in the map
+            // ensure that the author has mentioned someone otherwise not entered 
             followsGraph.putIfAbsent(author, new HashSet<>());
-            //someone eexplain the above
+           
             
             // adding all mentioned users to the author connected set
             for (String mentionedUser : mentionedUsers) {
