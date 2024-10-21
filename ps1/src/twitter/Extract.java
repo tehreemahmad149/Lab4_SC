@@ -66,26 +66,27 @@ public class Extract {
      */    
     public static Set<String> getMentionedUsers(List<Tweet> tweets) {
         Set<String> mentionedUsers = new HashSet<>();
-        
+
         for (Tweet tweet : tweets) {
-        	
-            String[] tokens = tweet.getText().split("\\s+");  // tweet is being split with the use of the whitespace so that each word is spearated
-            
-            
+            //splitting tweets so each character can be examined individually
+            String[] tokens = tweet.getText().split("\\s+");  
             
             for (String token : tokens) {
                 if (token.startsWith("@") && token.length() > 1) {
-                	
-                    String username = token.substring(1);  
-                    mentionedUsers.add(username);//the mentioned user is added to the set
+                    String username = token.substring(1);
+
+                    // this has been changed after issue encountered in SocialNetwork implementation when @bob1
+                    //was returned as bob! and not bob
+                    username = username.replaceAll("[^a-zA-Z0-9]+$", ""); // removing trailing
+                    if (!username.isEmpty()) {
+                        mentionedUsers.add(username.toLowerCase()); // to lowercase so that all the mentions can be handled easily
+                    }
                 }
             }
         }
         
-        
-        
-        
         return mentionedUsers;
     }
+
 
 }

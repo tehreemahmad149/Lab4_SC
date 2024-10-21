@@ -28,7 +28,7 @@ public class Filter {
      * @return all and only the tweets in the list whose author is username,
      *         in the same order as in the input list.
      */
-	public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
+	/*public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
         List<Tweet> result = new ArrayList<>();
 
         for (Tweet tweet : tweets) {
@@ -40,7 +40,23 @@ public class Filter {
         }
 
         return result; 
-    }
+    }*/
+	public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
+	    List<Tweet> result = new ArrayList<>();
+	    List<Tweet> matchingTweets = new ArrayList<>();
+
+	    for (Tweet tweet : tweets) {
+	        if (tweet.getAuthor().equalsIgnoreCase(username)) {
+	            matchingTweets.add(tweet);
+	        }
+	    }
+
+	    // Add all collected tweets at once
+	    result.addAll(matchingTweets);
+
+	    return result;
+	}
+
 
     /**
      * Find tweets that were sent during a particular timespan.
@@ -52,7 +68,7 @@ public class Filter {
      * @return all and only the tweets in the list that were sent during the timespan,
      *         in the same order as in the input list.
      */
-	public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
+	/*public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {//origonal timespan ode
         List<Tweet> result = new ArrayList<>();
 
         for (Tweet tweet : tweets) {
@@ -66,7 +82,35 @@ public class Filter {
         }
 
         return result;
-    }
+    }*/
+	public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) 
+	{//variant code for lab 5
+	    List<Tweet> result = new ArrayList<>();
+
+	    for (Tweet tweet : tweets) {
+	        Instant timestamp = tweet.getTimestamp();
+	        if (timestamp.compareTo(timespan.getStart()) >= 0 && timestamp.compareTo(timespan.getEnd()) <= 0) {
+	            result.add(tweet);
+	        }
+	    }
+
+	    return result;
+	}
+
+	/*public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
+	    List<Tweet> result = new ArrayList<>();
+
+	    for (Tweet tweet : tweets) {
+	        Instant timestamp = tweet.getTimestamp();
+	        // Buggy condition: checks for tweets outside the timespan
+	        if (timestamp.isBefore(timespan.getStart()) || timestamp.isAfter(timespan.getEnd())) {
+	            result.add(tweet);
+	        }
+	    }
+
+	    return result;
+	}*/ //this is the buggy implementation code that has been put in comments for lab 5
+
 
     /**
      * Find tweets that contain certain words.
@@ -83,7 +127,7 @@ public class Filter {
      *         so "Obama" is the same as "obama".  The returned tweets are in the
      *         same order as in the input list.
      */
-	public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
+	/*public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {//original code
         List<Tweet> result = new ArrayList<>();
 
         for (Tweet tweet : tweets) {
@@ -101,6 +145,20 @@ public class Filter {
         }
 
         return result;
-    }
+    }*/
+	public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
+	    List<Tweet> result = new ArrayList<>();
+	    for (Tweet tweet : tweets) {
+	        String text = tweet.getText().toLowerCase();
+	        for (String word : words) {
+	            if (text.matches(".*\\b" + word.toLowerCase() + "\\b.*")) {//string for pattern matching
+	                result.add(tweet);
+	                break;
+	            }
+	        }
+	    }
+	    return result;
+	}
+
 
 }

@@ -24,6 +24,9 @@ public class FilterTest {
     
     private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
     private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
+    private static final Tweet tweet4 = new Tweet(4, "alyssa", "Third tweet by Alyssa.", Instant.now());
+    private static final Tweet tweet5 = new Tweet(5, "someoneelse", "Tweet by someone else.", Instant.now());
+    private static final Tweet tweet3 = new Tweet(3, "Alyssa", "Another tweet by Alyssa.", Instant.now());
     //no new tweets have been added
     
     @Test(expected=AssertionError.class)
@@ -92,6 +95,18 @@ public class FilterTest {
         List<Tweet> result = Filter.inTimespan(Arrays.asList(tweet1, tweet2), timespan);
 
         assertEquals("expected no tweets in the timespan", 0, result.size());
+    }
+    @Test
+    public void testWrittenBy_EmptyTweetList() {
+        List<Tweet> result = Filter.writtenBy(Arrays.asList(), "alyssa");
+        assertEquals("Expected empty list when no tweets are provided", 0, result.size());
+    }
+    @Test
+    public void testWrittenBy_CaseInsensitivity() {
+        List<Tweet> result = Filter.writtenBy(Arrays.asList(tweet1, tweet2, tweet3), "ALYSSA");
+        assertEquals("Expected two tweets by Alyssa regardless of case", 2, result.size());
+        assertTrue("Expected list to contain tweet1", result.contains(tweet1));
+        assertTrue("Expected list to contain tweet3", result.contains(tweet3));
     }
 
     /*
